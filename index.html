@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos de Datos - Banco Promerica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #dashboard-modal {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        #dashboard-modal .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .modal-hidden .modal-content {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100">
+
+<header class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-40">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center gap-3">
+                <svg class="h-8 w-auto text-green-600" viewBox="0 0 48 48" fill="none">
+                    <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="4"/>
+                    <path d="M16 24L22 30L34 18" stroke="currentColor" stroke-width="4"/>
+                </svg>
+                <h1 class="text-xl sm:text-2xl font-bold">
+                    Catálogo de Productos de Datos <span class="text-green-600">- Banco Promerica</span>
+                </h1>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto p-6">
+
+<script>
+const DASH_DATA = [
+
+{ id:"dash-RPAUT084", tipo:"Reporte", nombre:"RPAUT084. Reporte de Gestión Proactiva - Saldos Pasivos", dominio:"Institucional", categoria:"Institucional", descripcion:"Permite monitorear indicadores clave institucionales relacionados con saldos pasivos y su evolución.", url:"https://app.powerbi.com/reportEmbed?reportId=0077ecbb-3070-4cdd-844a-18c04f2b9b94&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255&actionBarEnabled=true&reportCopilotInEmbed=true", owner:"Estefanía Villalobos Monge", patrocinador:"Luis Carlos Rodriguez", estado:"activo", tags:[], sensibilidad:"interno" },
+
+{ id:"dash-HERAUT43", tipo:"Herramienta", nombre:"HERAUT43. Gestión Integral del Cliente - Enfoque Personalizado - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Facilita la gestión personalizada del cliente mediante recomendación de productos y seguimiento comercial.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7405d7fd-a2a6-480a-9c69-f326d8f0f0af?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","personalizado","recomendador","next best action","next best product","agenda","seguimiento","crm"], sensibilidad:"interno" },
+
+{ id:"dash-HERAUT44", tipo:"Herramienta", nombre:"HERAUT44. Gestión Integral del Cliente - Enfoque Campaña - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Permite ejecutar campañas segmentadas con seguimiento de resultados y asignación comercial.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7ed3e37d-a184-4c66-9a51-7fa32c1cd277/41baa2f0dada24935c1a?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","campañas","flujo","seguimiento","resultados","asignación","crm"], sensibilidad:"interno" },
+
+{ id:"dash-RPAUT063", tipo:"Reporte", nombre:"RPAUT063. Distribución por Cantidad de Productos", dominio:"Banca Personas", categoria:"Personas", descripcion:"Analiza la profundidad y distribución de productos activos en la cartera.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/689fe9a5-f6ba-49c6-8c0a-5a96d0d99b52/f83b394482d0d8decd2b?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["cantidad de productos","distribución","profundidad","cross sell"], sensibilidad:"interno" },
+
+{ id:"dash-MOD71", tipo:"Modelo", nombre:"MOD71. Modelo de Geolocalización de Surcursales", dominio:"Banca Personas", categoria:"Personas", descripcion:"Asigna la sucursal óptima según ubicación y patrones de consumo del cliente.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/ea388a03-1c31-49ab-9238-dd97cd9ae084/ab306525e25dd0859b08?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Moises Alvares Navarro", estado:"activo", tags:["ubicación","canton","distrito","provincia","sucursal"], sensibilidad:"interno" },
+
+{ id:"dash-RPAUT047", tipo:"Reporte", nombre:"RPAUT047. Visión General Crédito Prendario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Monitorea cartera prendaria, colocación y riesgo crediticio.", url:"https://app.powerbi.com/reportEmbed?reportId=aa6c18db-c8b4-437e-a99e-76ec9a2cec67&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","prendario","resumen","cartera","riesgo","colocación"], sensibilidad:"interno" },
+
+{ id:"dash-RPAUT048", tipo:"Reporte", nombre:"RPAUT048. Visión General Crédito Hipotecario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Permite dar seguimiento a cartera hipotecaria, metas y comportamiento de mora.", url:"https://app.powerbi.com/reportEmbed?reportId=a9689a00-961d-4262-86b5-b127ee5d0fac&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","hipotecario","cartera","colocación","mora","metas","abonos"], sensibilidad:"interno" }
+
+];
+
+const DOMAINS = [...new Set(DASH_DATA.map(d => d.dominio))];
+</script>
+
+</main>
+</body>
+</html>
