@@ -6,6 +6,7 @@
     <title>Catálogo de Productos de Datos - Banco Promerica</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Estilos para una transición suave en el modal */
         #dashboard-modal {
             transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
         }
@@ -23,46 +24,367 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100">
 
-<header class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-40">
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4">
-            <div class="flex items-center gap-3">
-                <svg class="h-8 w-auto text-green-600" viewBox="0 0 48 48" fill="none">
-                    <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="4"/>
-                    <path d="M16 24L22 30L34 18" stroke="currentColor" stroke-width="4"/>
-                </svg>
-                <h1 class="text-xl sm:text-2xl font-bold">
-                    Catálogo de Productos de Datos <span class="text-green-600">- Banco Promerica</span>
-                </h1>
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-40">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                     <svg class="h-8 w-auto text-green-600" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 6C14.0589 6 6 14.0589 6 24C6 33.9411 14.0589 42 24 42C33.9411 42 42 33.9411 42 24C42 14.0589 33.9411 6 24 6Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round"/><path d="M16 24L22 30L34 18" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
+                        Catálogo de Productos de Datos <span class="text-green-600">- Banco Promerica</span>
+                    </h1>
+                </div>
             </div>
         </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Barra de búsqueda y filtros -->
+        <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg mb-8">
+            <div class="relative mb-4">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Buscar por nombre, descripción o tag..."
+                    class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                />
+            </div>
+            <div class="flex items-center justify-between mb-3">
+                 <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Filtrar por Dominio</h3>
+                 <button id="clear-filters-btn" class="text-sm text-green-600 dark:text-green-400 hover:underline">Limpiar selección</button>
+            </div>
+            <div id="domain-filters" class="flex flex-wrap gap-2">
+                <!-- Los botones de filtro se insertarán aquí -->
+            </div>
+        </div>
+
+        <!-- Grid de Dashboards -->
+        <div>
+            <p id="results-count" class="text-sm text-gray-500 dark:text-gray-400 mb-6"></p>
+            <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Las tarjetas de dashboard se insertarán aquí -->
+            </div>
+             <div id="no-results" class="hidden text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold">No se encontraron resultados</h3>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Intenta ajustar tu búsqueda o limpiar los filtros.</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal -->
+    <div id="dashboard-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 modal-hidden">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <!-- El contenido del modal se insertará aquí -->
+        </div>
     </div>
-</header>
 
-<main class="max-w-screen-xl mx-auto p-6">
 
-<script>
-const DASH_DATA = [
+    <script>
+        // --- DATOS (Simulando una fuente de datos externa) ---
+        const DASH_DATA = [
+            { id:"dash-RPAUT084", tipo:"Reporte", nombre:"RPAUT084. Reporte de Gestión Proactiva - Saldos Pasivos", dominio:"Institucional", categoria:"Institucional", descripcion:"Seguimiento de indicadores institucionales para saldos pasivos y su gestión proactiva.", url:"https://app.powerbi.com/reportEmbed?reportId=0077ecbb-3070-4cdd-844a-18c04f2b9b94&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255&actionBarEnabled=true&reportCopilotInEmbed=true", owner:"Estefanía Villalobos Monge", patrocinador:"Luis Carlos Rodriguez", estado:"activo", tags:[], sensibilidad:"interno" },
 
-{ id:"dash-RPAUT084", tipo:"Reporte", nombre:"RPAUT084. Reporte de Gestión Proactiva - Saldos Pasivos", dominio:"Institucional", categoria:"Institucional", descripcion:"Permite monitorear indicadores clave institucionales relacionados con saldos pasivos y su evolución.", url:"https://app.powerbi.com/reportEmbed?reportId=0077ecbb-3070-4cdd-844a-18c04f2b9b94&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255&actionBarEnabled=true&reportCopilotInEmbed=true", owner:"Estefanía Villalobos Monge", patrocinador:"Luis Carlos Rodriguez", estado:"activo", tags:[], sensibilidad:"interno" },
+            { id:"dash-HERAUT43", tipo:"Herramienta", nombre:"HERAUT43. Gestión Integral del Cliente - Enfoque Personalizado - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Apoya la gestión del cliente con recomendaciones y seguimiento para un enfoque personalizado.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7405d7fd-a2a6-480a-9c69-f326d8f0f0af?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","personalizado","recomendador","next best action","next best product","agenda","seguimiento","crm"], sensibilidad:"interno" },
 
-{ id:"dash-HERAUT43", tipo:"Herramienta", nombre:"HERAUT43. Gestión Integral del Cliente - Enfoque Personalizado - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Facilita la gestión personalizada del cliente mediante recomendación de productos y seguimiento comercial.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7405d7fd-a2a6-480a-9c69-f326d8f0f0af?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","personalizado","recomendador","next best action","next best product","agenda","seguimiento","crm"], sensibilidad:"interno" },
+            { id:"dash-HERAUT44", tipo:"Herramienta", nombre:"HERAUT44. Gestión Integral del Cliente - Enfoque Campaña - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Permite ejecutar campañas segmentadas con control de flujo, asignación y resultados.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7ed3e37d-a184-4c66-9a51-7fa32c1cd277/41baa2f0dada24935c1a?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","campañas","flujo","seguimiento","resultados","asignación","crm"], sensibilidad:"interno" },
 
-{ id:"dash-HERAUT44", tipo:"Herramienta", nombre:"HERAUT44. Gestión Integral del Cliente - Enfoque Campaña - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Permite ejecutar campañas segmentadas con seguimiento de resultados y asignación comercial.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/7ed3e37d-a184-4c66-9a51-7fa32c1cd277/41baa2f0dada24935c1a?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["gestión cliente","campañas","flujo","seguimiento","resultados","asignación","crm"], sensibilidad:"interno" },
+            { id:"dash-RPAUT063", tipo:"Reporte", nombre:"RPAUT063. Distribución por Cantidad de Productos", dominio:"Banca Personas", categoria:"Personas", descripcion:"Analiza la distribución y profundidad por cantidad de productos para potenciar el cross sell.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/689fe9a5-f6ba-49c6-8c0a-5a96d0d99b52/f83b394482d0d8decd2b?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["cantidad de productos","distribución","profundidad","cross sell"], sensibilidad:"interno" },
 
-{ id:"dash-RPAUT063", tipo:"Reporte", nombre:"RPAUT063. Distribución por Cantidad de Productos", dominio:"Banca Personas", categoria:"Personas", descripcion:"Analiza la profundidad y distribución de productos activos en la cartera.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/689fe9a5-f6ba-49c6-8c0a-5a96d0d99b52/f83b394482d0d8decd2b?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["cantidad de productos","distribución","profundidad","cross sell"], sensibilidad:"interno" },
+            { id:"dash-MOD71", tipo:"Modelo", nombre:"MOD71. Modelo de Geolocalización de Surcursales", dominio:"Banca Personas", categoria:"Personas", descripcion:"Optimiza la asignación de sucursal usando ubicación y variables geográficas del cliente.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/ea388a03-1c31-49ab-9238-dd97cd9ae084/ab306525e25dd0859b08?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Moises Alvares Navarro", estado:"activo", tags:["ubicación","canton","distrito","provincia","sucursal"], sensibilidad:"interno" },
 
-{ id:"dash-MOD71", tipo:"Modelo", nombre:"MOD71. Modelo de Geolocalización de Surcursales", dominio:"Banca Personas", categoria:"Personas", descripcion:"Asigna la sucursal óptima según ubicación y patrones de consumo del cliente.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/ea388a03-1c31-49ab-9238-dd97cd9ae084/ab306525e25dd0859b08?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Moises Alvares Navarro", estado:"activo", tags:["ubicación","canton","distrito","provincia","sucursal"], sensibilidad:"interno" },
+            { id:"dash-RPAUT047", tipo:"Reporte", nombre:"RPAUT047. Visión General Crédito Prendario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Monitorea colocación y riesgo en cartera de crédito prendario con una vista resumida.", url:"https://app.powerbi.com/reportEmbed?reportId=aa6c18db-c8b4-437e-a99e-76ec9a2cec67&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","prendario","resumen","cartera","riesgo","colocación"], sensibilidad:"interno" },
 
-{ id:"dash-RPAUT047", tipo:"Reporte", nombre:"RPAUT047. Visión General Crédito Prendario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Monitorea cartera prendaria, colocación y riesgo crediticio.", url:"https://app.powerbi.com/reportEmbed?reportId=aa6c18db-c8b4-437e-a99e-76ec9a2cec67&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","prendario","resumen","cartera","riesgo","colocación"], sensibilidad:"interno" },
+            { id:"dash-RPAUT048", tipo:"Reporte", nombre:"RPAUT048. Visión General Crédito Hipotecario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Da seguimiento a colocación, mora y metas de la cartera de crédito hipotecario.", url:"https://app.powerbi.com/reportEmbed?reportId=a9689a00-961d-4262-86b5-b127ee5d0fac&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","hipotecario","cartera","colocación","mora","metas","abonos"], sensibilidad:"interno" },
 
-{ id:"dash-RPAUT048", tipo:"Reporte", nombre:"RPAUT048. Visión General Crédito Hipotecario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Permite dar seguimiento a cartera hipotecaria, metas y comportamiento de mora.", url:"https://app.powerbi.com/reportEmbed?reportId=a9689a00-961d-4262-86b5-b127ee5d0fac&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["crédito","hipotecario","cartera","colocación","mora","metas","abonos"], sensibilidad:"interno" }
+            { id:"dash-SIN_CODIGO_01", tipo:"Modelo", nombre:"SIN_CODIGO_01. Alta Aceptacion de Extrafinanciamiento (XF)", dominio:"Banca Personas", categoria:"Personas", descripcion:"Sin descripción disponible.", url:"#", owner:"", patrocinador:"", estado:"activo", tags:[], sensibilidad:"interno" },
 
-];
+            { id:"dash-HERAUT09", tipo:"Herramienta", nombre:"HERAUT09. Información demográfica de Tarjetahabientes", dominio:"Banca Personas", categoria:"Personas", descripcion:"Explora perfiles demográficos de tarjetahabientes para segmentación y análisis de clientes.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/60a74003-3ddc-468a-b6d6-8000be9a6a8d?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["demografía","tarjetahabientes","edad","género","ingreso","ubicación","perfiles"], sensibilidad:"interno" },
 
-const DOMAINS = [...new Set(DASH_DATA.map(d => d.dominio))];
-</script>
+            { id:"dash-HERAUT47", tipo:"Herramienta", nombre:"HERAUT47. Herramienta de Detección de Cuentas de Efectivo a Bloquear o Cancelar", dominio:"Banca Personas", categoria:"Personas", descripcion:"Monitorea cuentas de efectivo para alertas y gestión de bloqueo/cancelación por riesgo o fraude.", url:"https://app.powerbi.com/groups/7d2b285f-4467-49b2-b06e-aa2b11063a99/reports/700cbb6f-c8ad-4c40-a26c-f313357e20fb/b7dd2ab03573adba5b0d?experience=power-bi", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Magaly Arias Gómez", estado:"activo", tags:["monitoreo","cuentas efectivo","fraude","aml","riesgo","bloqueo","cancelación","alertas"], sensibilidad:"interno" },
 
-</main>
+            { id:"dash-HERAUT48", tipo:"Herramienta", nombre:"HERAUT48. Generador de Cartera - Prendario e Hipotecario", dominio:"Banca Personas", categoria:"Personas", descripcion:"Genera insumos de cartera para análisis y gestión de préstamos prendarios e hipotecarios.", url:"https://app.powerbi.com/reportEmbed?reportId=f042dfad-399f-4685-829f-e8ac0faf364d&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Joylie Ramírez Chacón", estado:"activo", tags:["cartera","préstamos","gestión","clientes","análisis prendario","hipotecario"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT51", tipo:"Herramienta", nombre:"HERAUT51. Visor Estratégico - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Consolida indicadores para análisis estratégico y detección de oportunidades del negocio.", url:"https://app.powerbi.com/reportEmbed?reportId=7106a572-3eb9-45fc-961a-ae8c9e88f115&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["indicadores","estrategia","decisiones","oportunidades","consolidado"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT50", tipo:"Herramienta", nombre:"HERAUT50. Segmentación Estratégica y Rentabilidad - Banca Personas", dominio:"Banca Personas", categoria:"Personas", descripcion:"Cruza segmentación y rentabilidad para analizar contribución y priorizar clientes.", url:"https://app.powerbi.com/reportEmbed?reportId=5da2cc54-7341-4271-b90c-298b6b558b87&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Eduardo Solano Brenes", estado:"activo", tags:["segmentación","rentabilidad","clientes","análisis","contribución"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT041", tipo:"Reporte", nombre:"RPAUT041. Control de Autogestión (Banco)", dominio:"Banca Personas", categoria:"Personas", descripcion:"Controla autogestiones y adopción por canales para transaccionalidad de colaboradores.", url:"https://app.powerbi.com/reportEmbed?reportId=16b32ea0-87a8-4ad3-946b-aedd21c3d5bd&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Estefanía Villalobos Monge", patrocinador:"Laura Salazar Reyes", estado:"activo", tags:["autogestión","banco","canales","transaccionalidad","adopción"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT13", tipo:"Herramienta", nombre:"HERAUT13. Herramienta de perfilación - Visión 360 - Empresas", dominio:"Banca Empresas", categoria:"Empresas", descripcion:"Perfila clientes empresariales con visión 360 para evaluar riesgo, potencial y productos.", url:"https://app.powerbi.com/reportEmbed?reportId=ceb92b3b-ed20-467f-946b-f346a1186b50&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"María del Rocío Gómez Cárdenas", estado:"activo", tags:["empresas","visión 360","perfil","facturación","productos","riesgo","potencial"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT49", tipo:"Herramienta", nombre:"HERAUT49. Gestión Integral del Cliente - Enfoque Personalizado - Banca Empresas", dominio:"Banca Empresas", categoria:"Empresas", descripcion:"Apoya la asesoría a clientes jurídicos con análisis de comportamiento y personalización.", url:"https://app.powerbi.com/reportEmbed?reportId=d1ed0ef6-76b1-4223-92a3-1899737ea116&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Carlos Araya Valverde", estado:"activo", tags:["clientes","personalizado","comportamiento","banca","asesoría","empresas"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT082", tipo:"Reporte", nombre:"RPAUT082. Principalidad - Banca Empresas", dominio:"Banca Empresas", categoria:"Empresas", descripcion:"Da seguimiento al indicador de principalidad para clientes jurídicos y su gestión estratégica.", url:"https://app.powerbi.com/reportEmbed?reportId=60db89ee-8770-4a6d-9c39-db9445c53ab6&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Juan Manual Jiménez Solis", estado:"activo", tags:["principalidad","seguimiento","clientes","jurídicos","gestión","empresas","vinculación"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT45", tipo:"Herramienta", nombre:"HERAUT45. Gestión Integral del Cliente - Enfoque Personalizado", dominio:"Banca Privada", categoria:"Privada", descripcion:"Apoya asesoría y personalización para clientes de Banca Privada con enfoque transaccional.", url:"https://app.powerbi.com/links/Av7SDFwNNH?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Mónica Hernandez Brenes", patrocinador:"Laura Vargas Madrigal", estado:"activo", tags:["asesoría","comportamiento","transaccional","personalización","banca privada"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT46", tipo:"Herramienta", nombre:"HERAUT46. Gestión Integral del Cliente - Enfoque Campaña", dominio:"Banca Privada", categoria:"Privada", descripcion:"Permite campañas con segmentación y filtros para la estrategia comercial de Banca Privada.", url:"https://app.powerbi.com/links/wb-mA2yb7G?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Mónica Hernandez Brenes", patrocinador:"Laura Vargas Madrigal", estado:"activo", tags:["campañas","segmentación","filtros","clientes","estrategia"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT07", tipo:"Reporte", nombre:"RPAUT07. Información Banca Privada Gerencia", dominio:"Banca Privada", categoria:"Privada", descripcion:"Resumen de cuentas y certificados por gerencia y promotor para seguimiento ejecutivo.", url:"https://app.powerbi.com/groups/228e0f9c-6ed5-4e5f-a6b6-32228c894a1f/reports/3e11cceb-67b5-40d2-a576-cf941f4d5399/ReportSection58546c0b0695ad62ad8f?experience=power-bi", owner:"Mónica Hernandez Brenes", patrocinador:"Laura Vargas Madrigal", estado:"activo", tags:["cuentas","certificados","gerencia","promotores","resumen"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT056", tipo:"Reporte", nombre:"RPAUT056. Metas Certificados Banca Privada", dominio:"Banca Privada", categoria:"Privada", descripcion:"Seguimiento de indicadores y cumplimiento de metas de certificados en Banca Privada.", url:"https://app.powerbi.com/groups/228e0f9c-6ed5-4e5f-a6b6-32228c894a1f/reports/ac09e14d-a9b8-4ff8-a273-dd4c1e5edbce/ReportSection?experience=power-bi", owner:"Mónica Hernandez Brenes", patrocinador:"Sihoban Reyes Gutierrez", estado:"activo", tags:["certificados","metas","seguimiento","indicadores","cumplimiento"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT24", tipo:"Herramienta", nombre:"HERAUT24. Perfilación - Visión 360 - Empresas - Banca Privada", dominio:"Banca Privada", categoria:"Privada", descripcion:"Perfila clientes jurídicos con análisis demográfico y transaccional para una visión 360.", url:"https://app.powerbi.com/links/VAOOxKwmMK?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Mónica Hernandez Brenes", patrocinador:"Laura Vargas Madrigal", estado:"activo", tags:["clientes jurídicos","perfilamiento","demografía","transacciones","análisis"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT24-2", tipo:"Herramienta", nombre:"HERAUT24. Perfilación - Visión 360 - Personas - Banca Privada", dominio:"Banca Privada", categoria:"Privada", descripcion:"Permite análisis de clientes físicos con indicadores y comportamiento bajo una visión 360.", url:"https://app.powerbi.com/links/obxXumfCeR?ctid=355a3609-bc80-4b34-aa61-638d080bd255&pbi_source=linkShare", owner:"Mónica Hernandez Brenes", patrocinador:"Laura Vargas Madrigal", estado:"activo", tags:["visión 360","clientes físicos","indicadores","análisis","comportamiento"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT067", tipo:"Reporte", nombre:"RPAUT067. Reporte de Clientes según Estado", dominio:"Productos y Experiencia Cliente", categoria:"Clientes", descripcion:"Clasifica clientes por estado para análisis mensual de calidad y segmentación.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/d6eac8a3-2d23-4aea-955e-58375c7eee22/db2afccaea72e9e8805d?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Ana María Moscoso Doring", estado:"activo", tags:["clientes","estado","activo","inactivo","bloqueado","clasificación"], sensibilidad:"interno" },
+
+            { id:"dash-RPAUT083", tipo:"Reporte", nombre:"RPAUT083. Matriz Segmentación Estratégica - Persona Física - CR", dominio:"Productos y Experiencia Cliente", categoria:"Clientes", descripcion:"Soporta la estrategia de segmentación con clasificación de personas físicas en Costa Rica.", url:"https://app.powerbi.com/reportEmbed?reportId=4ed0f5b6-0eea-4c86-bb62-3211ff463f60&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Alcides Alejandro Arroyo Arroyo", patrocinador:"Ana María Moscoso Doring", estado:"activo", tags:["segmentación estratégica","costa rica","clasificación","personas","estrategia"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT35", tipo:"Herramienta", nombre:"HERAUT35. Herramienta de perfilación - Visión 360 - Clientes Planilleros", dominio:"Productos y Experiencia Cliente", categoria:"Clientes", descripcion:"Perfila clientes planilleros con KPIs y análisis de productos para comprender comportamiento y valor.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/a4a56b18-fe3c-400d-b7eb-663294cc473b/ReportSectiondb2f5b71bbc605085763?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Elliot Miguel Madrigal Corrales", estado:"activo", tags:["visión 360","planilla","planilleros","perfilamiento","productos","comportamiento","valor del cliente","kpis"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT10", tipo:"Herramienta", nombre:"HERAUT10. Herramienta de perfilación - Visión 360 - Personas", dominio:"Productos y Experiencia Cliente", categoria:"Clientes", descripcion:"Perfila personas con indicadores 360 para analizar productos y comportamiento del cliente.", url:"https://app.powerbi.com/groups/dad0b768-389d-4a03-861f-012a8b2667b8/reports/acbe1b6e-8d86-4210-a131-59d3fb9bc4ff/ReportSectiondb2f5b71bbc605085763?experience=power-bi", owner:"Estefanía Villalobos Monge", patrocinador:"Andrea Fabiola Cabezas Valverde", estado:"activo", tags:["visión 360","personas","perfilamiento","productos","comportamiento","valor del cliente","kpis"], sensibilidad:"interno" },
+
+            { id:"dash-PROY85", tipo:"Proyecto", nombre:"PROY85. Protagonistas", dominio:"Productos y Experiencia Cliente", categoria:"Clientes", descripcion:"Analiza métricas de clientas para evaluar comportamiento, mora y contribución al crecimiento.", url:"https://app.powerbi.com/reportEmbed?reportId=27de27de-6568-4703-8009-1e31ccb8c3b4&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Nancy Rebeca Garcia Ureña", patrocinador:"Marianne Hut Cabezas", estado:"activo", tags:["mujer","protagonistas","comportamiento","mora","crecimiento","brecha"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Indicadores Principales", dominio:"Talento Humano", categoria:"Humano", descripcion:"Da seguimiento a indicadores de gestión y desempeño para analítica de talento humano.", url:"https://osvaldo757.github.io/Recursos_Humanos_Banco_Promerica/", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["talento","indicadores","gestión","desempeño","recursos humanos"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-2", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Visión 360 Colaboradores", dominio:"Talento Humano", categoria:"Humano", descripcion:"Analiza colaboradores con enfoque 360 para apoyar decisiones de organización y talento.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/60a74003-3ddc-468a-b6d6-8000be9a6a8d/e25e8fc237aa319b6280?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["colaboradores","360","indicadores","análisis","organización"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-3", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Análisis de Terminaciones", dominio:"Talento Humano", categoria:"Humano", descripcion:"Monitorea métricas de salidas laborales y rotación para gestión de talento.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/1a72112a-9281-4462-93b0-7a17e77b003d/ReportSectiona1fb9cf19b7411364040?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["salidas","rotación","talento","métricas","gestión"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-4", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Análisis por Género", dominio:"Talento Humano", categoria:"Humano", descripcion:"Analiza indicadores de colaboradores bajo enfoque de género para gestión organizacional.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/b960491d-132e-4a57-b09e-a5c30d691339/ReportSection39bef77670de34a09617?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["género","sexo","indicadores","colaboradores","análisis"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-5", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Análisis de Salarios", dominio:"Talento Humano", categoria:"Humano", descripcion:"Explora compensación y métricas salariales para analítica de talento y gestión.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/d4060e25-38ff-4aeb-89f4-75fbb733aee9/ReportSection39bef77670de34a09617?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["salarios","compensación","indicadores","colaboradores","análisis"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-6", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Análisis por Colaborador - Demo", dominio:"Talento Humano", categoria:"Humano", descripcion:"Muestra trayectoria y crecimiento para visualizar la carrera de cada colaborador.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/3474f6b5-6366-4468-b6e7-2496a49884d4/ReportSection39bef77670de34a09617?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["carrera","trayectoria","crecimiento","colaborador","desarrollo"], sensibilidad:"interno" },
+
+            { id:"dash-PROY26-7", tipo:"Proyecto", nombre:"PROY26. Apoyo analítico a Talento Humano - Análisis 9-Box - Demo", dominio:"Talento Humano", categoria:"Humano", descripcion:"Evalúa talento por desempeño y potencial para apoyar decisiones de desarrollo de capacidades.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/3c7318c7-e1ca-4e5d-99f3-8e4845c8aefb/ReportSectiondaffbbe0186073920ba7?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Sol Echeverria", estado:"activo", tags:["talento","desempeño","potencial","evaluación","capacidades"], sensibilidad:"interno" },
+
+            { id:"dash-TRANS06", tipo:"Consolidado", nombre:"TRANS06. Consolidado Control Cargas", dominio:"Riesgos y Datos", categoria:"Datos", descripcion:"Controla cargas y fechas de actualización para alertas y calidad de registros en tablas.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/736c2e2f-3e6e-458b-a12c-04a4bd063ff6/6149779c883190d76c5a?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Roberto Valerio", estado:"activo", tags:["registros","cargas","fechas actualización","alertas","tablas"], sensibilidad:"interno" },
+
+            { id:"dash-PROY68", tipo:"Proyecto", nombre:"PROY68. Ingresos a Dashboard Equipo de Análisis de Datos", dominio:"Riesgos y Datos", categoria:"Datos", descripcion:"Monitorea consultas e ingresos a tableros publicados por el equipo de análisis de datos.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/78676649-c9d1-41a2-be6c-e4aee79978ae/e452d506d055bc6618f5?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Roberto Valerio", estado:"activo", tags:["consultas","dashboard","tableros","publicados","ingresos"], sensibilidad:"interno" },
+
+            { id:"dash-PROY68-2", tipo:"Proyecto", nombre:"PROY68. Control Migración Power BI", dominio:"Riesgos y Datos", categoria:"Datos", descripcion:"Controla registros de migración y bajas de dashboards del equipo de análisis de datos.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/0f7169a0-66ba-4a8e-bd50-815d0a0db045/b0e721d0a654e0864edf?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Roberto Valerio", estado:"activo", tags:["dashboard","equipo","análisis","registros","migración"], sensibilidad:"interno" },
+
+            { id:"dash-PROY60", tipo:"Proyecto", nombre:"PROY60. Control STAGE_TCG (LISTENERHUB)", dominio:"Riesgos y Datos", categoria:"Datos", descripcion:"Monitorea calidad y actualización de registros para tablas en producción dentro de ListenerHub.", url:"https://app.powerbi.com/groups/fb362940-81bc-42a7-bf7e-df33175706f8/reports/9e20bf42-f396-4c86-9caa-c16f134724e4/8f98ed08d24dcd202507?experience=power-bi", owner:"Osvaldo Andrey Mora Mora", patrocinador:"Gustavo Lobo", estado:"activo", tags:["calidad","registros","actualización","cargas","producción","listenerhub"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT55", tipo:"Herramienta", nombre:"HERAUT55. Nivel de Digitalización", dominio:"Banca Personas", categoria:"Personas", descripcion:"Mide niveles de digitalización para enrolado, login y uso de canales como HTML/SMS.", url:"https://app.powerbi.com/reportEmbed?reportId=d9fabff0-9d5b-43f3-a195-c205ff70c790&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Jimena Ureña Morales", patrocinador:"Nikole Lestkovith", estado:"activo", tags:["digitalización","html","sms","enrolado","login"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT56", tipo:"Herramienta", nombre:"HERAUT56. Seguro Protección al Tarjetahabiente", dominio:"Banca Personas", categoria:"Personas", descripcion:"Da seguimiento a colocación de seguros de protección asociados a tarjeta crédito.", url:"https://app.powerbi.com/reportEmbed?reportId=4a7ed4d4-fac0-47f7-8a06-8357e5ba7561&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Jimena Ureña Morales", patrocinador:"Wendy Quesada", estado:"activo", tags:["seguro","protección","tarjeta crédito","colocación","tarjetahabiente"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT87", tipo:"Herramienta", nombre:"HERAUT87. Reporte de Tarjetas de Débito", dominio:"Banca Personas", categoria:"Personas", descripcion:"Analiza tarjetas de débito y CAPA para cuantificar clientes y controlar bloqueos.", url:"https://app.powerbi.com/reportEmbed?reportId=2c6570b0-80fd-49c9-9df5-f55bc948e5db&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Jimena Ureña Morales", patrocinador:"Roderick Campos", estado:"activo", tags:["debito","tarjetas","capa","cantidad","clientes"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT58", tipo:"Herramienta", nombre:"HERAUT58. Facturacion Tipo Comercio", dominio:"Banca Personas", categoria:"Personas", descripcion:"Mide porcentajes de facturación por comercio/MCC para análisis de tarjetas y débito.", url:"https://app.powerbi.com/reportEmbed?reportId=b9315c7c-0386-4812-9b9e-297400045b60&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Jimena Ureña Morales", patrocinador:"Gabriela Soto", estado:"activo", tags:["facturacion","comercios","mcc","porcentaje","tarjeta","debito"], sensibilidad:"interno" },
+
+            { id:"dash-HERAUT86", tipo:"Herramienta", nombre:"HERAUT86. Reporte web de ventas nuevo Seguro Fraude Digital", dominio:"Banca Personas", categoria:"Personas", descripcion:"Monitorea ventas y métricas de activaciones/cancelaciones del seguro de fraude digital.", url:"https://app.powerbi.com/reportEmbed?reportId=92a5195c-47ab-4cc1-9341-90a6950f8c26&autoAuth=true&ctid=355a3609-bc80-4b34-aa61-638d080bd255", owner:"Jimena Ureña Morales", patrocinador:"Wendy Quesada", estado:"activo", tags:["seguro","fraude","ventas","digital","activaciones","cancelaciones"], sensibilidad:"interno" }
+        ];
+
+        const DOMAINS = [...new Set(DASH_DATA.map(d => d.dominio))];
+
+        // --- ICONOS SVG ---
+        const ICONS = {
+            "Herramienta": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`,
+            "Reporte": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
+            "Proyecto": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`,
+            "Modelo": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><path d="M12 2a10 10 0 0 0-4.32 19.14"></path><path d="M5 21a10 10 0 0 1 14.32-8.86"></path><path d="M19 3a10 10 0 0 0-14.32 8.86"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+            "Consolidado": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+            "Default": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-green-600 dark:text-green-400"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`,
+        };
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        let searchQuery = '';
+        let activeFilters = {
+            dominio: [],
+        };
+
+        // --- ELEMENTOS DEL DOM ---
+        const searchInput = document.getElementById('search-input');
+        const domainFiltersContainer = document.getElementById('domain-filters');
+        const clearFiltersBtn = document.getElementById('clear-filters-btn');
+        const dashboardGrid = document.getElementById('dashboard-grid');
+        const resultsCount = document.getElementById('results-count');
+        const noResults = document.getElementById('no-results');
+        const modal = document.getElementById('dashboard-modal');
+        const modalContent = modal.querySelector('.modal-content');
+
+
+        // --- FUNCIONES DE RENDERIZADO ---
+        
+        function renderFilters() {
+            domainFiltersContainer.innerHTML = DOMAINS.map(domain => {
+                const isActive = activeFilters.dominio.includes(domain);
+                return `
+                    <button
+                        data-domain="${domain}"
+                        class="filter-btn px-3 py-1.5 text-sm rounded-full transition-colors ${
+                            isActive 
+                            ? 'bg-green-600 text-white font-semibold shadow' 
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        }"
+                    >
+                        ${domain}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderDashboards() {
+            const lowercasedQuery = searchQuery.toLowerCase();
+            const filteredData = DASH_DATA.filter(item => {
+                const searchMatch = searchQuery === '' ||
+                    item.nombre.toLowerCase().includes(lowercasedQuery) ||
+                    item.descripcion.toLowerCase().includes(lowercasedQuery) ||
+                    item.tags.some(tag => tag.toLowerCase().includes(lowercasedQuery));
+
+                const domainMatch = activeFilters.dominio.length === 0 ||
+                    activeFilters.dominio.includes(item.dominio);
+
+                return searchMatch && domainMatch;
+            });
+
+            resultsCount.textContent = `Mostrando ${filteredData.length} de ${DASH_DATA.length} recursos.`;
+            
+            if (filteredData.length === 0) {
+                dashboardGrid.innerHTML = '';
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                dashboardGrid.innerHTML = filteredData.map(item => {
+                    const isActive = item.estado === 'activo';
+                    return `
+                        <div data-id="${item.id}" class="dashboard-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer group ${!isActive ? 'opacity-60 grayscale' : ''}">
+                            <div class="p-6">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-4">
+                                         <div class="flex-shrink-0 bg-green-100 dark:bg-green-900/50 p-3 rounded-lg">
+                                            ${ICONS[item.tipo] || ICONS['Default']}
+                                        </div>
+                                        <div>
+                                            <div class="uppercase tracking-wide text-xs text-green-600 dark:text-green-400 font-semibold">${item.dominio}</div>
+                                            <p class="block mt-1 text-lg leading-tight font-bold text-black dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">${item.nombre}</p>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isActive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}">
+                                        ${isActive ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </div>
+                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm">${item.descripcion}</p>
+                                <div class="mt-4 flex flex-wrap gap-2">
+                                    ${item.tags.slice(0, 3).map(tag => `<span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-md text-xs">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function openModal(item) {
+            modalContent.innerHTML = `
+                <div class="p-8">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-shrink-0 bg-green-100 dark:bg-green-900/50 p-4 rounded-xl">
+                                ${ICONS[item.tipo].replace('h-6 w-6', 'h-8 w-8') || ICONS['Default']}
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">${item.nombre}</h2>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${item.dominio}</p>
+                            </div>
+                        </div>
+                        <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                    <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <p class="text-gray-700 dark:text-gray-300">${item.descripcion}</p>
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                                <p class="font-semibold text-gray-600 dark:text-gray-300">Patrocinador</p>
+                                <p class="text-gray-800 dark:text-gray-100">${item.patrocinador}</p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                                <p class="font-semibold text-gray-600 dark:text-gray-300">Owner</p>
+                                <p class="text-gray-800 dark:text-gray-100">${item.owner}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-semibold text-gray-600 dark:text-gray-300 text-sm">Tags</p>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                ${item.tags.map(tag => `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-xs">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-900/50 px-8 py-4 flex flex-col sm:flex-row gap-3 justify-end border-t border-gray-200 dark:border-gray-700">
+                    <button id="copy-link-btn" class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Copiar Enlace
+                    </button>
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700">
+                        Abrir Dashboard 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            `;
+            modal.classList.remove('modal-hidden');
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+            document.getElementById('copy-link-btn').addEventListener('click', () => navigator.clipboard.writeText(item.url));
+        }
+
+        function closeModal() {
+            modal.classList.add('modal-hidden');
+        }
+
+        // --- MANEJADORES DE EVENTOS ---
+        
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderDashboards();
+        });
+
+        clearFiltersBtn.addEventListener('click', () => {
+            activeFilters.dominio = [];
+            renderFilters();
+            renderDashboards();
+        });
+
+        domainFiltersContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('.filter-btn');
+            if (!button) return;
+
+            const domain = button.dataset.domain;
+            const index = activeFilters.dominio.indexOf(domain);
+
+            if (index > -1) {
+                activeFilters.dominio.splice(index, 1);
+            } else {
+                activeFilters.dominio.push(domain);
+            }
+            
+            renderFilters();
+            renderDashboards();
+        });
+
+        dashboardGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.dashboard-card');
+            if (!card) return;
+
+            const dashboardId = card.dataset.id;
+            const selectedDashboard = DASH_DATA.find(item => item.id === dashboardId);
+            if(selectedDashboard) {
+                openModal(selectedDashboard);
+            }
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilters();
+            renderDashboards();
+        });
+
+    </script>
 </body>
 </html>
